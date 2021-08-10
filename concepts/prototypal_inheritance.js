@@ -43,4 +43,47 @@ const functional2 = () => {
   console.log(Object.getPrototypeOf(man) === animal)
   console.log(Object.getPrototypeOf(animal) === Object.prototype)
 }
-functional2()
+//functional2()
+
+
+// class-synatx constructors
+
+class Animal {
+  constructor(name) {
+    this.name = name
+  }
+
+  speak() {
+    console.log(this.name, ' :', 'speak')
+  }
+}
+
+class Ape extends Animal {
+  constructor(name) {
+    super(name + ' an ape')
+  }
+
+  call() {
+    console.log(this.name, ' :', 'ooo ooo ooo')
+  }
+}
+
+class Human extends Ape {
+  constructor(name) {
+    super(name + ' now a human earlier')
+  }
+
+  talk() {
+    console.log(this.name, ' :', 'Hi!')
+  }
+}
+
+human = new Human('Ben')
+human.talk()
+human.call()
+human.speak()
+console.log(Object.getPrototypeOf(human) === Human.prototype)
+console.log(Object.getPrototypeOf(Human.prototype) === Ape.prototype)
+console.log(Object.getPrototypeOf(Ape.prototype) === Animal.prototype)
+console.log(Object.getPrototypeOf(Animal.prototype) === Object.prototype)
+

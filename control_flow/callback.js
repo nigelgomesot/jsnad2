@@ -1,4 +1,5 @@
 const { readFile } = require('fs')
+const series = require('fastseries')()
 
 const [file1, file2, file3] = ['./example.txt', './example.txt', './example.txt']
 
@@ -66,3 +67,47 @@ const serial2 = () => {
 }
 //serial2()
 
+const serial3 = () => {
+  const files = [file1, file2, file3]
+  let index = 0,
+      data = []
+
+  const read = index => {
+    readFile(files[index], (err, contents) => {
+      if (err)
+        print(err)
+      else {
+        data.push(contents)
+        index++
+
+        if (index === files.length)
+          print(Buffer.concat(data).toString())
+        else
+          read(index)
+      }
+    })
+  }
+
+  read(index)
+}
+//serial3()
+
+const serial4 = () => {
+  const files = [file1, file2, file3]
+
+  const readers = files.map(file => {
+    return (_, cb) => {
+      readFile(file, (err, contents) => {
+        if (err) {
+          print(err)
+          cb(null, Buffer.alloc(0))
+        } else {
+          cb(null, contents)
+        }
+      })
+    }
+  })
+
+  series(null, readers, null, print)
+}
+serial4()

@@ -106,5 +106,34 @@ const example5 = () => {
     .then(print)
     .catch(console.error)
 }
-example5()
+//example5()
 
+// parallel execution (not ordered)
+const example6 = () => {
+  const { readFile } = require('fs').promises
+
+  const [file1, file2, file3] = ['./example.txt', './example.txt', './example.txt']
+
+  const print = contents => console.log(contents.toString())
+
+  readFile(file1).then(print).catch(console.error)
+  readFile(file2).then(print).catch(console.error)
+  readFile(file3).then(print).catch(console.error)
+}
+//example6()
+
+// parallel execution (race: first one settled)
+const example7 = () => {
+  const { readFile } = require('fs').promises
+
+  const files = ['./example.txt', './example.txt', './example.txt']
+
+  const print = contents => console.log(contents.toString())
+
+  const readers = files.map(file => readFile(file))
+
+  Promise.race(readers)
+    .then(print)
+    .catch(console.error)
+}
+example7()

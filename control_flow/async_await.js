@@ -28,4 +28,40 @@ const example2 = () => {
 
   run().catch(console.error)
 }
-example2()
+//example2()
+
+// serial execution (dynamic array files)
+const example3 = () => {
+  const print = contents => console.log(contents.toString())
+
+  const files =  new Array(3).fill('./example.txt')
+
+  async function run() {
+    const data = []
+
+    for (const file of files)
+      data.push(await readFile(file))
+
+    print(Buffer.concat(data))
+  }
+
+  run().catch(console.error)
+}
+//example3()
+
+const example4 = () => {
+  const print = contents => console.log(contents.toString())
+
+  const files = new Array(3).fill('./example.txt')
+
+  async function run() {
+    const readers = files.map(file => readFile(file))
+    const data = await Promise.all(readers)
+
+    print(Buffer.concat(data))
+  }
+
+  run().catch(console.error)
+}
+example4()
+

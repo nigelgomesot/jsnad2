@@ -49,6 +49,7 @@ const example3 = () => {
 }
 //example3()
 
+// parallel execution
 const example4 = () => {
   const print = contents => console.log(contents.toString())
 
@@ -63,5 +64,74 @@ const example4 = () => {
 
   run().catch(console.error)
 }
-example4()
+// example4()
+
+// parallel execution (allSettled)
+example5 = () => {
+  //const files =  new Array(3).fill('./example.txt')
+  const files = ['./example.txt', './examples.txt', './example.txt']
+
+  const print = contents => console.log(contents.toString())
+
+  async function run () {
+    const readers = files.map(file => readFile(file))
+
+    const results = await Promise.allSettled(readers)
+
+    results
+      .filter(({status}) => status === 'rejected')
+      .forEach(({reason}) => console.error(reason))
+
+    const data = results
+                  .filter(({status}) => status === 'fulfilled')
+                  .map(({value}) => value)
+
+    print(Buffer.concat(data))
+  }
+
+  run().catch(console.error)
+}
+// example5()
+
+// parallel callback wrapped in promise
+const example6 = () => {
+  const { promisify } = require('util')
+  const { readFile } = require('fs')
+  //const [file1, file2, file3] = new Array(3).fill('./example.txt')
+  const [file1, file2, file3] = ['./example.txt', './examples.txt', './example.txt']
+
+  const read = promisify(cb => {
+    let index = 0
+
+    const print = (err, contents) => {
+      index++
+
+      if (err) {
+        console.error(err)
+        if (index === 3)
+          cb()
+
+        return
+      }
+
+      console.log(contents.toString())
+
+      if (index === 3)
+        cb()
+    }
+
+    readFile(file1, print)
+    readFile(file2, print)
+    readFile(file3, print)
+  })
+
+  async function run() {
+    const done = () => console.log('done.')
+
+    await read(done)
+  }
+
+  run().catch(console.error)
+}
+example6()
 

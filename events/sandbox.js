@@ -60,8 +60,27 @@ const example6 = () => {
   ee.emit('my-event')
 }
 
+// same event multiple emits
+const example7 = () => {
+  const ee = new EventEmitter()
+
+  ee.on('my-event', id => console.log(`my-event emitted ${id}`))
+  ee.emit('my-event', 1)
+  ee.emit('my-event', 2)
+  ee.emit('my-event', 3)
+}
+
+// same event one emits(once)
+const example8 = () => {
+  const ee = new EventEmitter()
+
+  ee.once('my-event', id => console.log(`my-event emitted ${id}`))
+  ee.emit('my-event', 1)
+  ee.emit('my-event', 2)
+  ee.emit('my-event', 3)
+}
 
 const run = () => {
-  example6()
+  example8()
 }
 run()

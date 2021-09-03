@@ -80,7 +80,43 @@ const example8 = () => {
   ee.emit('my-event', 3)
 }
 
+
+// remove listener
+const example9 = () => {
+  const ee = new EventEmitter()
+
+  const listener1 = () => console.log('event listener: 1')
+  const listener2 = () => console.log('event listener: 2')
+
+  setInterval(() => ee.emit('my-event'), 200)
+
+  ee.on('my-event', listener1)
+  ee.on('my-event', listener2)
+
+  setTimeout(() => ee.removeListener('my-event', listener1), 500)
+  setTimeout(() => ee.removeListener('my-event', listener2), 1100)
+}
+
+// removeAllListener
+const example10 = () => {
+  const ee = new EventEmitter()
+
+  ee.on('my-event1', () => console.log('my-event1 listener: 1'))
+  ee.on('my-event1', () => console.log('my-event1 listener: 2'))
+  ee.on('my-event2', () => console.log('my-event2 listener: 1'))
+  ee.on('my-event3', () => console.log('my-event3 listener: 1'))
+
+  setInterval(() => {
+    ee.emit('my-event1')
+    ee.emit('my-event2')
+    ee.emit('my-event3')
+  }, 200)
+
+  setTimeout(() => ee.removeAllListeners('my-event2'), 500)
+  setTimeout(() => ee.removeAllListeners(), 1100)
+}
+
 const run = () => {
-  example8()
+  example10()
 }
 run()

@@ -124,7 +124,7 @@ const example11 = () => {
   ee.emit('error', new Error('unhandled error'))
 }
 
-// unhandled error event
+// handled error event
 const example12 = () => {
   const ee = new EventEmitter()
 

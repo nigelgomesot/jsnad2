@@ -116,7 +116,23 @@ const example10 = () => {
   setTimeout(() => ee.removeAllListeners(), 1100)
 }
 
+
+// unhandled error event
+const example11 = () => {
+  const ee = new EventEmitter()
+
+  ee.emit('error', new Error('unhandled error'))
+}
+
+// unhandled error event
+const example12 = () => {
+  const ee = new EventEmitter()
+
+  ee.on('error', err => console.log(err.message))
+  ee.emit('error', new Error('handled error'))
+}
+
 const run = () => {
-  example10()
+  example12()
 }
 run()

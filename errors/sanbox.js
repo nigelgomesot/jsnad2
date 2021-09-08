@@ -51,7 +51,69 @@ const example4 = () => {
   validateNumber(6)
 }
 
+
+// error code
+const example5 = () => {
+  const validateNumber = num => {
+    if (num % 2 == 0)
+      return true
+
+    const err = new Error('num must be even')
+    err.code = 'ERR_MUST_BE_EVEN'
+    throw err
+  }
+
+  validateNumber(3)
+}
+
+// custom error constructor
+const example6 = () => {
+  class OddError extends Error {
+    constructor(varName = '') {
+      super(`${varName} must be even`)
+    }
+
+    get name() {
+      return 'OddError'
+    }
+  }
+
+  const validateNumber = num => {
+    if (num % 2 == 0)
+      return true
+
+    const err = new OddError('num')
+    throw err
+  }
+
+  validateNumber(3)
+}
+
+// error code and custom error constructor
+const example7 = () => {
+  class OddError extends Error {
+    constructor(varName = '') {
+      super(`${varName} must be even`)
+      this.code = 'ERR_MUST_BE_EVEN'
+    }
+
+    get name() {
+      return `OddError: [${this.code}]`
+    }
+  }
+
+  const validateNumber = num => {
+    if (num % 2 == 0)
+      return true
+
+    const err = new OddError('num')
+    throw err
+  }
+
+  validateNumber(3)
+}
+
 const run = () => {
-  example4()
+  example7()
 }
 run()

@@ -113,7 +113,71 @@ const example7 = () => {
   validateNumber(3)
 }
 
+// try/catch errors
+class OddError extends Error {
+  constructor(varName = '') {
+    super(`${varName} must be even`)
+  }
+
+  get name() {
+    return 'OddError'
+  }
+}
+
+const validateNumber = num => {
+  if (typeof num !== 'number')
+    throw new TypeError('num must be a number')
+
+  if (num < 0)
+    throw new RangeError('num must be positive')
+
+  if (num % 2 !== 0)
+    throw new OddError('num')
+
+  return true
+}
+
+const logError = error => {
+  let message = ''
+
+  switch(true) {
+    case error instanceof TypeError:
+      message = 'type-error: not a number'
+      break
+    case error instanceof RangeError:
+      message = 'range-error: not a positive number'
+      break
+    case error instanceof OddError:
+      message = 'odd-error: not an even number'
+      break
+    default:
+      message = 'unknown-error'
+  }
+
+  console.error(message)
+}
+
+// try/catch error instanceof
+const example8 = () => {
+  try {
+    const result = validateNumber(4)
+    console.log(result)
+  } catch(err) {
+    logError(err)
+  }
+}
+
+// try/catch error instanceof with incorrect error message
+const example9 = () => {
+  try {
+    const result = validateNumber(4)
+    console.log(result())
+  } catch(err) {
+    logError(err)
+  }
+}
+
 const run = () => {
-  example7()
+  example9()
 }
 run()

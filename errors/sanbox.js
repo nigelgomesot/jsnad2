@@ -177,7 +177,69 @@ const example9 = () => {
   }
 }
 
+
+// try/catch with error codes
+const codifyError = (error, code) => {
+  error.code = code
+  return error
+}
+
+const validateNumberWithErrorCode = num => {
+  if (typeof num !== 'number')
+    throw codifyError(new TypeError('num must be a number'), 'ERR_MUST_BE_NUMBER')
+
+  if (num < 0)
+    throw codifyError(new RangeError('num must be positive'), 'ERR_NUMBER_MUST_BE_POSITIVE')
+
+  if (num % 2 !== 0)
+    throw codifyError(new OddError('num'), 'ERR_NUMBER_MUST_BE_EVEN')
+
+  return true
+}
+
+const logErrorCode = error => {
+  let message = ''
+
+  switch(error.code) {
+    case 'ERR_MUST_BE_NUMBER':
+      message = 'type-error-code: not a number'
+      break
+    case 'ERR_NUMBER_MUST_BE_POSITIVE':
+      message = 'range-error-code: not a positive number'
+      break
+    case 'ERR_NUMBER_MUST_BE_EVEN':
+      message = 'odd-error-code: not an even number'
+      break
+    default:
+      message = 'unknown-error-code'
+  }
+
+  console.error(message)
+}
+
+const example10 = () => {
+  try {
+    const result = validateNumberWithErrorCode(2)
+    console.log(result())
+  } catch(err) {
+    logErrorCode(err)
+  }
+}
+
+// callback try/catch
+const example11 = () => {
+  setTimeout(() => {
+    try {        
+      const result = validateNumberWithErrorCode(2)
+      console.log(result())
+    } catch(err) {
+      logErrorCode(err)
+    }
+  }, 2000)
+}
+
+
 const run = () => {
-  example9()
+  example11()
 }
 run()

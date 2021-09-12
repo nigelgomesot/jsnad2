@@ -151,7 +151,7 @@ const logError = error => {
       message = 'odd-error: not an even number'
       break
     default:
-      message = 'unknown-error'
+      message = `unknown-error: ${error.message}`
   }
 
   console.error(message)
@@ -239,7 +239,39 @@ const example11 = () => {
 }
 
 
+// rejections
+const example12 = () => {
+  
+  const validateNumberPromise = num => {
+    return new Promise((resolve, reject) => {
+      if (typeof num !== 'number')
+        return reject(new TypeError('num must be a number'))
+    
+      if (num < 0)
+        return reject(new RangeError('num must be positive'))
+    
+      if (num % 2 !== 0)
+        return reject(new OddError('num'))
+    
+      return resolve(true)
+    })
+  }
+  
+  validateNumberPromise(4)
+    .then(console.log)
+    .catch(logError)
+
+  validateNumberPromise(3)
+    .then(console.log)
+    .catch(logError)
+
+  validateNumberPromise(4)
+    .then(result => {throw new Error('custom error')})
+    .catch(logError)
+}
+
+
 const run = () => {
-  example11()
+  example12()
 }
 run()

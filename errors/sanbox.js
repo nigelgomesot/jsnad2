@@ -240,23 +240,22 @@ const example11 = () => {
 
 
 // rejections
+const validateNumberPromise = num => {
+  return new Promise((resolve, reject) => {
+    if (typeof num !== 'number')
+      return reject(new TypeError('num must be a number'))
+  
+    if (num < 0)
+      return reject(new RangeError('num must be positive'))
+  
+    if (num % 2 !== 0)
+      return reject(new OddError('num'))
+  
+    return resolve(true)
+  })
+}
+
 const example12 = () => {
-  
-  const validateNumberPromise = num => {
-    return new Promise((resolve, reject) => {
-      if (typeof num !== 'number')
-        return reject(new TypeError('num must be a number'))
-    
-      if (num < 0)
-        return reject(new RangeError('num must be positive'))
-    
-      if (num % 2 !== 0)
-        return reject(new OddError('num'))
-    
-      return resolve(true)
-    })
-  }
-  
   validateNumberPromise(4)
     .then(console.log)
     .catch(logError)
@@ -270,8 +269,24 @@ const example12 = () => {
     .catch(logError)
 }
 
+// async try/catch
+const example13 = () => {
+  async function asyncValidateNumber(num) {
+    try {
+      const result = await validateNumberPromise(num)
+      console.log(result)
+    } catch (err) {
+      logError(err)
+    }
+  }
+
+  asyncValidateNumber('')
+  asyncValidateNumber(-2)
+  asyncValidateNumber(3)
+  asyncValidateNumber(2)
+}
 
 const run = () => {
-  example12()
+  example13()
 }
 run()

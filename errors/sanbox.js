@@ -286,7 +286,66 @@ const example13 = () => {
   asyncValidateNumber(2)
 }
 
+const validateNumberErrorOnly = num => {
+  const result = validateNumberWithErrorCode(num)
+  throw Error('some other error')
+
+  return result
+}
+
+const throwError = error => {
+  switch(error.code) {
+    case 'ERR_MUST_BE_NUMBER':
+      throw Error('type-error-code: not a number')
+    case 'ERR_NUMBER_MUST_BE_POSITIVE':
+      throw Error('range-error-code: not a positive number')
+    case 'ERR_NUMBER_MUST_BE_EVEN':
+      throw Error('odd-error-code: not an even number')
+    default:
+      throw Error(`unknown-error-code: ${error.message}`)
+  }
+}
+
+// async/await error propogation
+const example14 = () => {
+  async function asyncValidateNumberErrorOnly(num) {
+    try {
+      const result = await validateNumberErrorOnly(num)
+      console.log('result: ', result)
+    } catch(err) {
+      throwError(err)
+    }
+  }
+
+  asyncValidateNumberErrorOnly('-1')
+    .catch(console.error)
+  asyncValidateNumberErrorOnly(-1)
+    .catch(console.error)
+  asyncValidateNumberErrorOnly(1)
+    .catch(console.error)
+  asyncValidateNumberErrorOnly(4)
+    .catch(console.error)
+}
+
+// synchronous error propogation
+const example15 = () => {
+  function asyncValidateNumberErrorOnly(num) {
+    try {
+      const result = validateNumberErrorOnly(num)
+      console.log('result: ', result)
+    } catch(err) {
+      console.log('re-throwing error')
+      throwError(err)
+    }
+  }
+
+  try { asyncValidateNumberErrorOnly('-1') } catch(err) { console.error(err) }
+  try { asyncValidateNumberErrorOnly(-1) } catch(err) { console.error(err) }
+  try { asyncValidateNumberErrorOnly(1) } catch(err) { console.error(err) }
+  try { asyncValidateNumberErrorOnly(4) } catch(err) { console.error(err) }
+}
+
 const run = () => {
-  example13()
+  example15()
 }
 run()

@@ -390,7 +390,8 @@ const example16 = () => {
       console.log('result:', result)
   }
 
-  runValidateNumberWithCallback(2, mainCallback)
+  runValidateNumberWithCallback(3, mainCallback)
+  runValidateNumberWithCallback(4, mainCallback)
 }
 
 const run = () => {

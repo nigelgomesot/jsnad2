@@ -345,7 +345,55 @@ const example15 = () => {
   try { asyncValidateNumberErrorOnly(4) } catch(err) { console.error(err) }
 }
 
+
+// callback based error propogation
+const example16 = () => {
+  const validateNumberWithCallback = (num, cb) => {
+    if (typeof num !== 'number')
+      return cb(codifyError(new TypeError('num must be a number'), 'ERR_MUST_BE_NUMBER'))
+
+    if (num < 0)
+      return cb(codifyError(new RangeError('num must be positive'), 'ERR_NUMBER_MUST_BE_POSITIVE'))
+
+    if (num % 2 !== 0)
+      return cb(codifyError(new OddError('num'), 'ERR_NUMBER_MUST_BE_EVEN'))
+
+    return cb(null, true)
+  }
+
+  const runValidateNumberWithCallback = (num, cb) => {
+    const propogateErrorCallback = (error, result) => {
+      if (!error)
+       return cb(null, result)
+  
+      switch(error.code) {
+        case 'ERR_MUST_BE_NUMBER':
+          return cb(Error('type-error-code: not a number'))
+        case 'ERR_NUMBER_MUST_BE_POSITIVE':
+          return cb(Error('range-error-code: not a positive number'))
+        case 'ERR_NUMBER_MUST_BE_EVEN':
+          return cb(Error('odd-error-code: not an even number'))
+        default:
+          return cb(Error(`unknown-error-code: ${error.message}`))
+      }
+  
+      
+    }
+
+    validateNumberWithCallback(num, propogateErrorCallback)
+  }
+
+  const mainCallback = (err, result) => {
+    if (err)
+      console.error('error occurred:', err)
+    else
+      console.log('result:', result)
+  }
+
+  runValidateNumberWithCallback(2, mainCallback)
+}
+
 const run = () => {
-  example15()
+  example16()
 }
 run()

@@ -30,7 +30,60 @@ const example2 = () => {
   console.log('new buf4:', buf4)
 }
 
+// buffer allocation
+const example3 = () => {
+  buf1 = new Buffer(10)
+  buf2 = Buffer.alloc(10)
+  buf3 = Buffer.allocUnsafe(10)
+  buf4 = Buffer.allocUnsafe(10)
+
+  console.log('Buffer new:', buf1)
+  console.log('Buffer alloc:', buf2)
+  console.log('Buffer allocUnsafe 1:', buf3)
+  console.log('Buffer allocUnsafe 2:', buf4)
+}
+
+// convert string to buffers
+const example4  = () => {
+  const lengthDiff = () => {
+    const a = 'A',
+          aBuffer = Buffer.from('A'),
+          eyes = '👀',
+          eyesBuffer = Buffer.from('👀')
+
+    console.log('lengthDiff')
+    console.group('')
+    console.log('a length:', a.length)
+    console.log('aBuffer:', aBuffer)
+    console.log('aBuffer length:', aBuffer.length)
+    console.log('eyes length:', eyes.length)
+    console.log('eyesBuffer:', eyesBuffer)
+    console.log('eyesBuffer length:', eyesBuffer.length)
+    console.groupEnd('')
+  }
+  lengthDiff()
+
+  const encodings = () => {
+    console.log('encodings')
+    const utf8Encoded = Buffer.from('👀'),
+          utf16leEncoded = Buffer.from('👀', 'utf16le')
+
+    console.group('character encodings')
+    console.log('utf8Encoded :', utf8Encoded)
+    console.log('utf16leEncoded :', utf16leEncoded)
+    console.groupEnd('character encodings')
+
+    const base64Encoded = Buffer.from('8J+RgA==', 'base64')
+
+    console.group('binary to text encodings')
+    console.log('utf8Encoded :', utf8Encoded)
+    console.log('base64Encoded :', base64Encoded)
+    console.groupEnd('binary to text encodings')
+  }
+  encodings()
+}
+
 const run = () => {
-  example2()
+  example4()
 }
 run()

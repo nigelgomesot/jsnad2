@@ -83,7 +83,39 @@ const example4  = () => {
   encodings()
 }
 
+// convert buffers to strings
+const example5 = () => {
+  const buffer = Buffer.from('👀')
+
+  console.group('basic methods')
+  console.log('buffer: ', buffer)
+  console.log('buffer.toString(): ', buffer.toString())
+  console.log('buffer concatenate with string:')
+  console.log(buffer + '')
+  console.groupEnd('basic methods')
+
+  console.group('encoding')
+  console.log('buffer: ', buffer)
+  console.log("buffer.toString('hex'): ", buffer.toString('hex'))
+  console.log("buffer.toString('base64'): ", buffer.toString('base64'))
+  console.groupEnd('encoding')
+
+  console.group('string_decoder')
+  const { StringDecoder } = require('string_decoder')
+  
+  const bufferFrag1 = Buffer.from('f09f', 'hex')
+  console.log('bufferFrag1: ', bufferFrag1)
+  
+  const bufferFrag2 = Buffer.from('9180', 'hex')
+  console.log('bufferFrag2: ', bufferFrag2)
+
+  const decoder = new StringDecoder()
+  console.log('write frag1: ', decoder.write(bufferFrag1))
+  console.log('write frag2: ', decoder.write(bufferFrag2))
+  console.groupEnd('string_decoder')
+}
+
 const run = () => {
-  example4()
+  example5()
 }
 run()

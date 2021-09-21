@@ -115,7 +115,20 @@ const example5 = () => {
   console.groupEnd('string_decoder')
 }
 
+// de/serialization of json & buffer
+const example6 = () => {
+  const buffer = Buffer.from('👀')
+  const json = JSON.stringify(buffer)
+  console.log('json:', json)
+  console.log('json constructor name:', json.constructor.name)
+  const parsed = JSON.parse(json)
+  console.log('parsed:', parsed)
+  console.log('parsed constructor name:', parsed.constructor.name)
+  const bufferNew = Buffer.from(parsed.data)
+  console.log('bufferNew:', bufferNew)
+}
+
 const run = () => {
-  example5()
+  example6()
 }
 run()

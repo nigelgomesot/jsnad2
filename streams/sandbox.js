@@ -85,6 +85,42 @@ const example5 = () => {
 }
 
 
-const run = () => example5()
+// Writable basic with file
+const example6 = () => {
+  const fs = require('fs')
+
+  const writable = fs.createWriteStream('./write.out')
+  writable.on('finish', () => console.log('write finished.'))
+  writable.write('A\n')
+  writable.write('B\n')
+  writable.write('C\n')
+  writable.end('end of file.')
+}
+
+// Writable with custom Writable stream
+const example7 = () => {
+  const { Writable } = require('stream')
+  const createWritableStream = data => {
+    return new Writable({
+      decodeStrings: false,
+      write(chunk, enc, next) {
+        data.push(chunk)
+        next()
+      }
+    })
+  }
+
+  const data = []
+  const writable = createWritableStream(data)
+  writable.on('finish', () => console.log('write finished.', data))
+  writable.write('A\n')
+  writable.write('B\n')
+  writable.write('C\n')
+  writable.end('end of array.')
+}
+
+
+
+const run = () => example7()
 run()
 

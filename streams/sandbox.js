@@ -120,7 +120,30 @@ const example7 = () => {
 }
 
 
+// Writable stream support non string & non buffers (eg: numbers) [user objectMode: true]
+const example8 = () => {
+  const { Writable } = require('stream')
 
-const run = () => example7()
+  const createWritableStream = data => {
+    return new Writable({
+      objectMode: true,
+      write(chunk, enc, next) {
+        data.push(chunk)
+        next()
+      }
+    })
+  }
+
+  const data = []
+  const writable = createWritableStream(data)
+  writable.on('finish', () => console.log('writing finished.', data))
+  writable.write('A\n')
+  writable.write(1)
+  writable.write(true)
+  writable.write({'b': 'B'})
+  writable.end('done.')
+}
+
+const run = () => example8()
 run()
 

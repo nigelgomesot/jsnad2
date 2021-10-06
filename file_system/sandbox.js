@@ -37,6 +37,34 @@ const example4 = () => {
   console.log('extname:', extname(__filename))
 }
 
-const run = () => example4()
+// synchronous based operations
+const example5 = () => {
+  const { join } = require('path')
+  const { readFileSync, writeFileSync } = require('fs')
+
+  // read as buffer(default)
+  const bufferContents = readFileSync(join(__dirname, 'in.txt'))
+  console.log('bufferContents:', bufferContents)
+
+  // read as utf8
+  const contents = readFileSync(join(__dirname, 'in.txt'), {encoding: 'utf8'})
+  console.log('contents:', contents)
+
+  // write contents
+  writeFileSync(join(__dirname, 'out.txt'), contents.toUpperCase())
+
+  // append contents
+  writeFileSync(join(__dirname, 'out.txt'), contents.toUpperCase(), {flag: 'a'})
+
+  // error handlings
+  try {
+    readFileSync(join(__dirname,'invalid-file.txt'))
+  } catch(err) {
+    console.error('error occurred:', err.message)
+  }
+}
+
+
+const run = () => example5()
 run()
 

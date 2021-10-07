@@ -64,7 +64,56 @@ const example5 = () => {
   }
 }
 
+// callback based operations
+const example6 = () => {
+  const { join } = require('path')
+  const { readFile, writeFile } = require('fs')
 
-const run = () => example5()
+  // read as buffer
+  readFile(join(__dirname, 'in.txt'), (err, bufferContents) => {
+    if (err)
+      return console.error('read error occurred:', err.message)
+
+    console.log('bufferContents:', bufferContents)
+  })
+
+  // read as utf8
+  readFile(join(__dirname, 'in.txt'), {encoding: 'utf8'}, (err, contents) => {
+    if (err)
+      return console.error('read error occurred:', err.message)
+
+    console.log('contents:', contents)
+  })
+
+  const contents = "THIS IS TEST CONTENT \n"
+
+  //write contents
+  setTimeout(() => {
+    writeFile(join(__dirname, 'out.txt'), contents, err => {
+      if (err)
+        console.error('write error occurred:', err.message)
+    })
+  , 1000})
+
+  //append contents
+  setTimeout(() => {
+    writeFile(join(__dirname, 'out.txt'), "THIS IS TEST CONTENT APPENDED \n", {'flag': 'a'}, err => {
+      if (err)
+        console.error('write error occurred:', err.message)
+    })
+  , 2000})
+
+  // error handling
+  readFile(join(__dirname, 'invalid-file.txt'), {encoding: 'utf8'}, (err, contents) => {
+    if (err)
+      return console.error('read error occurred:', err.message)
+
+    console.log('contents:', contents)
+  })
+
+}
+
+
+const run = () => example6()
 run()
 

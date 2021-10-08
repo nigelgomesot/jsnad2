@@ -110,10 +110,49 @@ const example6 = () => {
 
     console.log('contents:', contents)
   })
-
 }
 
+// promised based operations
+const example7 = () => {
+  const { join } = require('path')
+  const { readFile, writeFile } = require('fs').promises
 
-const run = () => example6()
+  // read as buffer
+  const fn1 = async () => {
+    const bufferContents = await readFile(join(__dirname, 'in.txt'))
+    console.log('bufferContents:', bufferContents)
+  }
+  fn1().catch(console.error)
+
+  // read as utf8
+  const fn2 = async () => {
+    const contents = await readFile(join(__dirname, 'in.txt'), {encoding: 'utf8'})
+    console.log('contents:', contents)
+  }
+  fn2().catch(console.error)
+
+  // write contents
+  const fn3 = async () => {
+    await writeFile(join(__dirname, 'out.txt'), "this is test data via promises \n")
+    console.log('write completed')
+  }
+  setTimeout(() => fn3().catch(console.error), 1000)
+
+  // append contents
+  const fn4 = async () => {
+    await writeFile(join(__dirname, 'out.txt'), "this is test data appended via promises\n", {'flag': 'a'})
+    console.log('append completed')
+  }
+  setTimeout(() => fn4().catch(console.error), 2000)
+
+  // error handling
+  const fn5 = async () => {
+    const bufferContents = await readFile(join(__dirname, 'invalid-file.txt'))
+    console.log('bufferContents:', bufferContents)
+  }
+  fn5().catch(err => console.error('error occurred:', err.message))
+}
+
+const run = () => example7()
 run()
 

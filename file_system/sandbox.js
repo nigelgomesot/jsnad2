@@ -153,6 +153,51 @@ const example7 = () => {
   fn5().catch(err => console.error('error occurred:', err.message))
 }
 
-const run = () => example7()
+// stream based operations
+const example8 = () => {
+  const { pipeline } = require('stream')
+  const { join } = require('path')
+  const { createReadStream, createWriteStream } = require('fs')
+
+  pipeline(
+    createReadStream(join(__dirname, 'in.txt')),
+    createWriteStream(join(__dirname, 'out.txt')),
+    err => {
+      if (err)
+        return console.error('stream error occurred:', err.message)
+
+      console.log('completed.')
+    }
+  )
+}
+
+const example9 = () => {
+  const { pipeline, Transform } = require('stream')
+  const { join } = require('path')
+  const { createReadStream, createWriteStream } = require('fs')
+
+  const createTransformStream = () => {
+    return new Transform({
+      transform(chunk, enc, next) {
+        const upperCased = chunk.toString().toUpperCase()
+        next(null, upperCased)
+      }
+    })
+  } 
+  
+  pipeline(
+    createReadStream(join(__dirname, 'in.txt')),
+    createTransformStream(),
+    createWriteStream(join(__dirname, 'out.txt')),
+    err => {
+      if (err)
+        return console.error('stream error occurred:', err.message)
+
+      console.log('completed.')
+    }
+  )
+}
+
+const run = () => example9()
 run()
 

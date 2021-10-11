@@ -198,6 +198,61 @@ const example9 = () => {
   )
 }
 
-const run = () => example9()
+// reading directories: sync
+const example10 = () => {
+  const { readdirSync } = require('fs')
+
+  try {
+    console.log(readdirSync(__dirname))
+  } catch (err) {
+    console.error('error occurred:', err.message)
+  }
+
+  try {
+    console.log(readdirSync('/invalid-dir'))
+  } catch (err) {
+    console.error('error occurred:', err.message)
+  }
+}
+
+// reading directories: callback
+const example11 = () => {
+  const { readdir } = require('fs')
+
+  readdir(__dirname, (err, files) => {
+    if (err)
+      return console.error('error occurred:', err.message)
+
+    console.log(files)
+  })
+
+  readdir('/invalid-dir', (err, files) => {
+    if (err)
+      return console.error('error occurred:', err.message)
+
+    console.log(files)
+  })
+}
+
+// reading directories: promises
+const example12 = () => {
+  const { readdir: readdirPromise } = require('fs').promises
+
+  const run = async () => {
+    const files =  await readdirPromise(__dirname)
+    console.log(files)
+  }
+
+  run().catch(err => console.error('error occurred:', err.message))
+
+  const run2 = async () => {
+    const files =  await readdirPromise('/invalid-dir')
+    console.log(files)
+  }
+
+  run2().catch(err => console.error('error occurred:', err.message))
+}
+
+const run = () => example12()
 run()
 

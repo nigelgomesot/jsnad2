@@ -253,6 +253,55 @@ const example12 = () => {
   run2().catch(err => console.error('error occurred:', err.message))
 }
 
-const run = () => example12()
+// stream operations
+const example13 = () => {
+  const { createServer } = require('http')
+  const { Readable, Transform, pipeline } = require('stream')
+  const { opendir } = require('fs')
+
+  const createEntryTransform = () => {
+    let syntax = '[\n'
+
+    return new Transform({
+      writableObjectMode: true,
+      readableObjectMode: false,
+      transform(entry, enc, next) {
+        next(null, `${syntax} ${entry.name}`)
+        syntax = ',\n'
+      },
+      final(cb) {
+        this.push('\n]\n')
+        cb()
+      }
+    })
+  }
+
+  createServer((req, res) => {
+    if (req.url !== '/') {
+      res.statusCode = 404
+      res.end('Not Found')
+      return
+    }
+
+    opendir(__dirname, (err, dir) => {
+      if (err) {
+        res.statusCode = 500
+        res.end('Server error')
+        return
+      }
+
+      const dirStream = Readable.from(dir)
+      const entryTransform = createEntryTransform()
+
+      pipeline(dirStream, entryTransform, res, (err) => {
+        if (err) {
+          console.error('error occurred:', err.message)
+        }
+      })
+    })
+  }).listen(3001)
+}
+
+const run = () => example13()
 run()
 

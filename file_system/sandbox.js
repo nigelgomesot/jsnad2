@@ -321,6 +321,14 @@ const example14 = () => {
   }
 }
 
-const run = () => example14()
+const example15 = () => {
+  const { watch } = require('fs')
+
+  watch('.', (evt, filename) => {
+    console.log(evt, filename)
+  })
+}
+
+const run = () => example15()
 run()
 

@@ -321,6 +321,7 @@ const example14 = () => {
   }
 }
 
+// watch basic
 const example15 = () => {
   const { watch } = require('fs')
 
@@ -329,6 +330,39 @@ const example15 = () => {
   })
 }
 
-const run = () => example15()
+// watch advanced
+const example16 = () => {
+  const { join, resolve } = require('path')
+  const { watch, readdirSync, statSync } = require('fs')
+
+  const cwd = resolve('.')
+  const files = new Set(readdirSync('.'))
+
+  watch('.', (evt, filename) => {
+    try {
+      const { ctimeMs, mtimeMs } = statSync(join(cwd, filename))
+
+      if (!files.has(filename)) {
+        evt = 'created'
+        files.add(filename)
+      } else {
+        if (ctimeMs === mtimeMs)
+          evt = 'content-updated'
+        else
+          evt = 'status-updated'
+      }
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        files.delete(filename)
+        evt = 'deleted'
+      } else
+        console.error('error occurred:', err.message)
+    } finally {
+      console.log(evt, filename)
+    }
+  })
+}
+
+const run = () => example16()
 run()
 

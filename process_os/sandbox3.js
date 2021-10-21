@@ -36,5 +36,19 @@ const example3 = () => {
   process.on('exit', code => console.log(`exiting process with code ${code}`))
 }
 
-const run = () => example3()
+// process properties
+const example4 = () => {
+  console.log('process.platform', process.platform)
+  console.log('process.pid', process.pid)
+  console.log('process.cwd()', process.cwd())
+  console.log('process.env', process.env)
+
+  console.log('changing dir...')
+  process.chdir('process_os')
+
+  console.log('process.cwd()', process.cwd())
+  console.log('process.env', process.env)
+}
+
+const run = () => example4()
 run()

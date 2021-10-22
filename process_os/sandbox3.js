@@ -50,5 +50,34 @@ const example4 = () => {
   console.log('process.env', process.env)
 }
 
-const run = () => example4()
+// process stats
+const example5 = () => {
+  console.log('process uptime:', process.uptime())
+
+  setTimeout(() => {
+    console.log('process uptime:', process.uptime())
+  }, 1000)
+}
+
+const example6 = () => {
+  const outputStats = () => {
+    const uptime = process.uptime()
+    const {user, system} = process.cpuUsage()
+
+    console.log(uptime, user, system, (user + system)/ 1000000)
+  }
+
+  outputStats()
+
+  setTimeout(() => {
+    outputStats()
+
+    const now = Date.now()
+
+    while (Date.now() - now < 5000) {/* do something */}
+    outputStats()
+  }, 500)
+}
+
+const run = () => example6()
 run()

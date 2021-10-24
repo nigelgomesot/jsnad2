@@ -79,5 +79,24 @@ const example6 = () => {
   }, 500)
 }
 
-const run = () => example6()
+// process memoryUsage
+const example7 = () => {
+  const stats = [process.memoryUsage()]
+
+  let iterations = 5
+
+  while (iterations--) {
+    let i = 10000
+    const arr = []
+
+    while (i--)
+      arr.push({[Math.random()]: Math.random()})
+
+    stats.push(process.memoryUsage())
+  }
+
+  console.table(stats)
+}
+
+const run = () => example7()
 run()

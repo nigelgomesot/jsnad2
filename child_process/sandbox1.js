@@ -42,5 +42,33 @@ const example3 = () => {
   }
 }
 
-const run = () => example3()
+
+// exec (async)
+const example4 = () => {
+  const { exec } = require('child_process')
+
+  exec(
+    `${process.execPath} -e "console.log('A'); console.error('B')"`,
+    (err, stdout, stderr) => {
+      console.log('subprocess err:', err),
+      console.log('subprocess stdout:', stdout),
+      console.log('subprocess stderr:', stderr)
+    }
+  )
+}
+
+// exec with subprocess error
+const example5 = () => {
+  const { exec } = require('child_process')
+
+  exec(
+    `${process.execPath} -e "console.log('A'); throw new Error('B error')"`,
+    (err, stdout, stderr) => {
+      console.log('subprocess err:', err),
+      console.log('subprocess stdout:', stdout.toString()),
+      console.log('subprocess stderr:', stderr.toString())
+    }
+  )
+}
+const run = () => example5()
 run()

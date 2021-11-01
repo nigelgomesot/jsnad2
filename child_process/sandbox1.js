@@ -70,5 +70,86 @@ const example5 = () => {
     }
   )
 }
-const run = () => example5()
+
+// spawnSync
+const example6 = () => {
+  const { spawnSync } = require('child_process')
+
+  const result = spawnSync(
+    process.execPath,
+    ['-e', `console.log('subprocess stdout')`]
+  )
+
+  console.log(result)
+  console.log(result.stdout.toString())
+}
+
+// spawnSync with subprocess non 0 exit code
+const example7 = () => {
+  const { spawnSync } = require('child_process')
+
+  const result = spawnSync(
+    process.execPath,
+    ['-e', `process.exit(1)`]
+  )
+
+  console.log(result)
+  console.log(result.stderr.toString())
+}
+
+// spawnSync with subprocess with error
+const example8 = () => {
+  const { spawnSync } = require('child_process')
+
+  const result = spawnSync(
+    process.execPath,
+    ['-e', `throw new Error('stderr error.')`]
+  )
+
+  console.log(result)
+  console.log(result.stderr.toString())
+}
+
+// spawn
+const example9 = () => {
+  const { spawn } = require('child_process')
+
+  const sp = spawn(
+    process.execPath,
+    ['-e', `console.log('subprocess stdout.')`]
+  )
+
+  console.log('pid:', sp.pid)
+  sp.stdout.pipe(process.stdout)
+  sp.on('close', status => console.log('subprocess exit status:', status))
+}
+
+// spawn with subprocess non 0 exit code
+const example10 = () => {
+  const { spawn } = require('child_process')
+
+  const sp = spawn(
+    process.execPath,
+    ['-e', `process.exit(1)`]
+  )
+
+  console.log('pid:', sp.pid)
+  sp.stdout.pipe(process.stdout)
+  sp.on('close', status => console.log('subprocess exit status:', status))
+}
+
+// exec as an instance
+const example11 = () => {
+  const { exec }= require('child_process')
+
+  const i = exec(
+    `${process.execPath} -e "console.log('subprocess stdout')"`
+  )
+
+  console.log('pid:', i.pid)
+  i.stdout.pipe(process.stdout)
+  i.on('close', status => console.log('subprocess exit status:', status))
+}
+
+const run = () => example11()
 run()

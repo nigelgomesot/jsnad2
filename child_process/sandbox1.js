@@ -165,5 +165,28 @@ const example12 = () => {
   sp.stdout.pipe(process.stdout)
 }
 
-const run = () => example12()
+// process configuration with cwd option
+const example13 = () => {
+  const { IS_CHILD } = process.env
+
+  if (IS_CHILD) {
+    console.log('subprocess cwd:', process.cwd())
+    console.log('process.env:', process.env)
+  } else {
+    const { parse } = require('path')
+    const { root } = parse(process.cwd())
+    const { spawn } = require('child_process')
+
+    const sp = spawn(
+      process.execPath,
+      [__filename],
+      { cwd: root, env: {'IS_CHILD': true}}
+    )
+
+    console.log('parent process cwd:', process.cwd())
+    sp.stdout.pipe(process.stdout)
+  }
+}
+
+const run = () => example13()
 run()

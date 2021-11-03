@@ -151,5 +151,19 @@ const example11 = () => {
   i.on('close', status => console.log('subprocess exit status:', status))
 }
 
-const run = () => example11()
+// process configuration, overwrite ENV variables
+const example12 = () => {
+  const { spawn } = require('child_process')
+
+  process.env.EXAMPLE12_PROCESS_VAR = 'PARENT_VALUE'
+  const sp = spawn(
+    process.execPath,
+    ['-p', 'process.env'],
+    { env: {'EXAMPLE12_CHILD_PROCESS_VAR': 'CHILD_VALUE'}}
+  )
+
+  sp.stdout.pipe(process.stdout)
+}
+
+const run = () => example12()
 run()

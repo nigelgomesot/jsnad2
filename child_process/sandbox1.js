@@ -208,5 +208,35 @@ const example14 = () => {
   sp.stdin.end()
 }
 
-const run = () => example14()
+// child process stdio option with ignore
+const example15 = () => {
+  const { spawn } = require('child_process')
+  const sp = spawn(
+    process.execPath,
+    [
+      '-e',
+      `console.error('output error'); console.log('output info');`
+    ],
+    {stdio: ['pipe', 'inherit', 'ignore']}
+  )
+}
+
+// child process input option for *Sync methods
+const example16 = () => {
+  const { spawnSync } = require('child_process')
+
+  spawnSync(
+    process.execPath,
+    [
+      '-e',
+      `console.error('output error'); process.stdin.pipe(process.stdout);`
+    ],
+    {
+      input: 'this is an input option text \n',
+      stdio: ['pipe', 'inherit', 'ignore']
+    }
+  )
+}
+
+const run = () => example16()
 run()

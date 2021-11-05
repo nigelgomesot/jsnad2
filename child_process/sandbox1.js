@@ -188,5 +188,25 @@ const example13 = () => {
   }
 }
 
-const run = () => example13()
+
+// child process stdio option
+const example14 = () => {
+  const { spawn } = require('child_process')
+
+  const sp = spawn(
+    process.execPath,
+    [
+      '-e',
+      `console.error('err output'); process.stdin.pipe(process.stdout)`
+    ],
+    {stdio: ['pipe', 'inherit', process.stdout]}
+  )
+
+  //sp.stdout.pipe(process.stdout)
+  //sp.stderr.pipe(process.stdout)
+  sp.stdin.write('this input will be output\n')
+  sp.stdin.end()
+}
+
+const run = () => example14()
 run()

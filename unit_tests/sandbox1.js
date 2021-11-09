@@ -26,6 +26,7 @@ const example1 = () => {
   assert.fail()
 }
 
+// strict equality 1
 const example2 = () => {
   const add = (a, b) => a + b
 
@@ -35,5 +36,27 @@ const example2 = () => {
   assert.equal(typeof sum, 'number')
 }
 
-const run = () => example2()
+// strict equality 2
+const example3 = () => {
+  const add = (a, b) => (a + b)//.toString()
+
+  const sum = add(1, 2)
+
+  assert.strictEqual(3, sum)
+}
+
+// throws - sync
+const example4 = () => {
+  const add = (a, b) => {
+    if (typeof a != 'number' || typeof b != 'number')
+      throw new Error('a & b must be numbers')
+
+    return a + b
+  }
+
+  assert.throws(() => add('5', '5'), Error('a & b must be numbers'))
+  assert.doesNotThrow(() => add(5, 5))
+}
+
+const run = () => example4()
 run()

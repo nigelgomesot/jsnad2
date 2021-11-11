@@ -45,7 +45,7 @@ const example3 = () => {
   assert.strictEqual(3, sum)
 }
 
-// throws - sync
+// errors - sync
 const example4 = () => {
   const add = (a, b) => {
     if (typeof a != 'number' || typeof b != 'number')
@@ -58,5 +58,47 @@ const example4 = () => {
   assert.doesNotThrow(() => add(5, 5))
 }
 
-const run = () => example4()
+// errors - callback
+const example5 = () => {
+  const addCallback = (a, b, cb) => {
+    setTimeout(() => {
+      if (typeof a != 'number' || typeof b != 'number')
+        return cb(new Error('a & b must be numbers'))
+
+      cb(null, `result is: ${a + b}`)
+    })
+  }
+
+  addCallback(1, 2, (err, result) => {
+    assert.ifError(err)
+    assert.equal('result is: 3', result)
+  })
+
+  addCallback('1', 2, (err, result) => {
+    assert.deepStrictEqual(err, new Error('a & b must be numbers'))
+    assert.strictEqual(undefined, result)
+  })
+}
+
+// errors - promise
+const example6 = () => {
+  const { promisify } = require('util')
+
+  const timeoutPromise = promisify(setTimeout)
+
+  const asyncAdd = async (a, b) => {
+    await timeoutPromise(300)
+
+    if (typeof a != 'number' || typeof b != 'number')
+      throw new Error('a & b must be numbers')
+    else
+      return `result is: ${a + b}`
+  }
+
+  assert.rejects(asyncAdd('1', 2), Error('a & b must be numbers'))
+
+  assert.doesNotReject(asyncAdd(1, 2))
+}
+
+const run = () => example6()
 run()

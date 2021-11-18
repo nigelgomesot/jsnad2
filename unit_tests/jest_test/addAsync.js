@@ -5,7 +5,7 @@ const { promisify } = require('util')
 const timeoutPromise = promisify(setTimeout)
 
 const addAsync = async (a, b) => {
-  await timeoutPromise(300)
+  await timeoutPromise(3000)
 
   if (typeof a != 'number' || typeof b != 'number')
     throw new Error('a & b must be numbers')

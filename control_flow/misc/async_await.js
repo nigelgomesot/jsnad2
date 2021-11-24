@@ -13,7 +13,7 @@ const processTask = async duration => {
             }, duration)
         }) 
     }
-    return await timerPromise(duration)
+    return timerPromise(duration)
 }
 
 const tasks = [2000, 5000, 1000]
@@ -37,32 +37,28 @@ const parallel = async tasks => {
     console.log('🔵 results:', results)
 }
 
-// parallel throttled
+// parallel throttled (PENDING)
 const parallelThrottled = async tasks => {
     const throttleLimit = 2,
+          totalTasks = tasks.length,
           results = []
+    
+    while (results.length < totalTasks) {
+        console.log('.')
 
-    let running = 0
-    while (tasks.length) {
-        //console.log('.')
-        if (running === throttleLimit)
-            continue
-
-        console.log(`running: ${running}`)
-        const task = tasks.shift()
-        running++
-        processTask(task)
-            .then(out => {
-                console.log('processed', task)
-                running--
+        for (let i = 1; i <= throttleLimit; i++) {
+            processTask(tasks[0]).then(out => {
+                console.log('>>>> completed')
                 results.push(out)
-            }).catch(err => console.error)
+            })
+        }
     }
 
     console.log('🔵 results:', results)
 }
 
 const run = () => {
+    //parallel(tasks)
     parallelThrottled(tasks)
 }
 run()

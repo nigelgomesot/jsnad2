@@ -38,7 +38,7 @@ const parallel = async tasks => {
 }
 
 // parallel throttled
-const parallelThrottled = async tasks => {
+const parallelThrottledRecursive = async tasks => {
     const limit = 2,
           total = tasks.length,
           results = []
@@ -73,8 +73,48 @@ const parallelThrottled = async tasks => {
     next()
 }
 
+// REF: https://codeburst.io/async-map-with-limited-parallelism-in-node-js-2b91bd47af70
+// REF: https://github.com/userpixel/cap-parallel/blob/master/index.js
+// INFO: better then previous since results order is preserved.
+
+const parallelThrottledIterative = async tasks => {
+    const limit = 2,
+          results = []
+
+    function* arrayGenerator(array) {
+        for (let i = 0; i < array.length; i++) {
+            const currentValue =  array[i]
+            yield [currentValue, i, array]
+        }
+    }
+
+    const buildWorker = async (workerId, taskGenerator) => {
+        for (let [currentValue, idx, tasks] of taskGenerator) {
+            //console.log(`worker:${workerId} started`)
+            //console.time(`worker:${workerId} ended`)
+            await processTask(tasks[idx]).then(out => {
+                results[idx] = out
+            })
+            //console.timeEnd(`worker:${workerId} ended`)
+        }
+    }
+
+    const taskGenerator = arrayGenerator(tasks),
+          workers = []
+
+    console.time('parallelThrottled')
+    for (let i = 0; i < limit; i++) {
+        workers.push(buildWorker(i, taskGenerator))
+    }
+
+    await Promise.all(workers)
+    console.log('🔵 results:', results)
+    console.timeEnd('parallelThrottled')
+}
+
+
 const run = () => {
-    parallelThrottled(tasks)
+    parallelThrottledIterative(tasks)
 }
 run()
 
